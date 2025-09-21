@@ -1,0 +1,26 @@
+services:
+  db:
+    image: mariadb:lts
+    restart: always
+    hostname: mariadb
+    container_name: mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: dbob16
+      MARIADB_DATABASE: tam3
+      MARIADB_USER: tam3
+      MARIADB_PASSWORD: tam3
+    volumes:
+      - "tam3-db:/var/lib/mysql"
+      - "./schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro"
+    ports:
+      - 127.0.0.1:3306:3306
+  adminer:
+    image: adminer
+    restart: always
+    hostname: adminer
+    container_name: adminer
+    ports:
+      - 127.0.0.1:8080:8080
+
+volumes:
+  tam3-db:

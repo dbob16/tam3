@@ -1,0 +1,40 @@
+CREATE TABLE IF NOT EXISTS api_keys (
+    `api_key` VARCHAR(255),
+    `pc_name` VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS prefixes (
+    `name` VARCHAR(255),
+    `color` VARCHAR(255),
+    `weight` INT DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS tickets (
+    `prefix` VARCHAR(255),
+    `t_id` INT,
+    `first_name` VARCHAR(255),
+    `last_name` VARCHAR(255),
+    `phone_number` VARCHAR(255),
+    `preference` VARCHAR(20),
+    PRIMARY KEY (`prefix`, `t_id`)
+);
+
+CREATE TABLE IF NOT EXISTS baskets (
+    `prefix` VARCHAR(255),
+    `b_id` INT,
+    `description` VARCHAR(255),
+    `donors` VARCHAR(255),
+    `winning_ticket` INT
+);
+
+CREATE VIEW IF NOT EXISTS combined AS
+SELECT b.prefix, b.b_id, b.winning_ticket, CONCAT(t.last_name, ", ", t.first_name) AS winner
+FROM baskets b LEFT JOIN tickets t
+ON b.prefix = t.prefix AND b.winning_ticket = t.t_id
+ORDER BY b.prefix, b.b_id;
+
+CREATE VIEW IF NOT EXISTS report AS
+SELECT b.prefix, CONCAT(t.last_name, ", ", t.first_name) AS winner_name, t.phone_number, t.preference, b.b_id, b.winning_ticket, b.description
+FROM baskets b LEFT JOIN tickets t
+ON b.prefix = t.prefix AND b.winning_ticket = t.t_id
+ORDER BY b.prefix, winner_name, t.phone_number, t.preference, b.b_id;
