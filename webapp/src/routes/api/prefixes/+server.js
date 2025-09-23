@@ -11,7 +11,7 @@ export async function GET() {
         const data = await res.json();
         return new Response(JSON.stringify(data), {status: 200, statusText: "Prefixes fetched from remote successfully."});
     } else {
-        const data = await db.select().from(prefixes);
+        const data = await db.select().from(prefixes).orderBy(prefixes.weight, prefixes.name);
         return new Response(JSON.stringify(data), {status: 200, statusText: "Prefixes loaded successfully."});
     }
 }

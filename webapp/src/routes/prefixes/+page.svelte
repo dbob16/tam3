@@ -20,7 +20,6 @@
 
     async function savePrefix() {
         const post_body = JSON.stringify({...prefix_form});
-        console.log(post_body);
         const res = await fetch("/api/prefixes/", {
             method: 'POST',
             body: JSON.stringify({...prefix_form}),
@@ -30,8 +29,18 @@
             status = `[${res.status}]: ${res.statusText}`;
         } else {
             status = `${res.statusText}`;
-            getPrefixes()
+            getPrefixes();
         }
+    }
+
+    async function delPrefix(name) {
+        const res = await fetch(`/api/prefixes/${name}`, { method: 'DELETE' });
+        if (!res.ok) {
+            status = `[${res.status}]: ${res.statusText}`;
+        } else {
+            status = `${res.statusText}`;
+            getPrefixes();
+        };
     }
 
     if (browser) {
@@ -62,9 +71,13 @@
     </div>
     <div>
         <div>Commands</div>
-        <div>
-            <button onclick={savePrefix}>Save/Update</button>
-            <button onclick={() => {
+        <div class="flex-row {prefix_form.color}">
+            <button class="styled" onclick={() => {
+                if (prefix_form.name !== "") {
+                    savePrefix();
+                };
+            }}>Save/Update</button>
+            <button class="styled" onclick={() => {
                 prefix_form = {name: "", color: "white", weight: 0};
             }}>Reset</button>
         </div>
@@ -78,13 +91,17 @@
         <div>Commands</div>
     </div>
     {#each all_prefixes as prefix}
-    <div>
+    <div class="row">
         <div>{prefix.name}</div>
         <div>{prefix.color}</div>
         <div>{prefix.weight}</div>
-        <div>
-            <button>Edit</button>
-            <button>Delete</button>
+        <div class="flex-row {prefix.color}">
+            <button class="styled" onclick={() => {
+                prefix_form = {...prefix}
+            }}>Edit</button>
+            <button class="styled" onclick={() => {
+                delPrefix(prefix.name);
+            }}>Delete</button>
         </div>
     </div>
     {/each}
@@ -108,12 +125,21 @@
 
     .prefix-list {
         margin-top: 3rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
     }
 
     .prefix-list div {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
+        align-items: center;
         gap: 1rem;
+        padding: 0.25rem;
+    }
+
+    .prefix-list div.row:nth-child(2n) {
+        background: #ddd;
     }
 
     .status {

@@ -1,1 +1,27 @@
+:root {
+    --button-fg: #333333;
+    --button-bg: #eeeeee;
+    --button-border: #333333;
+}
 
+a.styled, button.styled {
+    display: block;
+    font: bold 12pt Arial;
+    text-decoration: none;
+    background-color: var(--button-bg);
+    color: var(--button-fg);
+    padding: 0.5rem 0.25rem;
+    border: solid 1px var(--button-border);
+    border-radius: 0.25rem;
+}
+
+a.styled:hover, button.styled:hover {
+    text-decoration: underline;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}

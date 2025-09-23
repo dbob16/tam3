@@ -1,0 +1,35 @@
+.white {
+    --button-fg: #333333;
+    --button-bg: #ffffff;
+    --button-border: #333333;
+}
+
+.blue {
+    --button-fg: #000000;
+    --button-bg: #add8e6;
+    --button-border: #000000;
+}
+
+.yellow {
+    --button-fg: #000000;
+    --button-bg: #f9f96c;
+    --button-border: #000000;
+}
+
+.orange {
+    --button-fg: #000000;
+    --button-bg: #ffba39;
+    --button-border: #000000;
+}
+
+.red {
+    --button-fg: #000000;
+    --button-bg: #fa7575;
+    --button-border: #000000;
+}
+
+.green {
+    --button-fg: #000000;
+    --button-bg: lightgreen;
+    --button-border: #000000;
+}
