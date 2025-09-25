@@ -15,7 +15,7 @@ export async function GET({ params }) {
     } else {
         const data = await db.select().from(prefixes).where(eq(prefixes.name, name));
         if (data[0]) {
-            return new Response(JSON.stringify(data[0]), {status: 200, statusText: "Prefix loaded successfully."})
+            return new Response(JSON.stringify(data[0]), {status: 200, statusText: "Prefix loaded successfully.", headers: {'Content-Type': 'application/json'}})
         } else {
             return new Response(JSON.stringify({status: "Issue loading prefix"}), {status: 404, statusText: "Prefix not found."})
         }
