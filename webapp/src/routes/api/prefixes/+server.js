@@ -18,7 +18,6 @@ export async function GET() {
 
 export async function POST({ request }) {
     const { name, color, weight } = await request.json();
-    console.log({name, color, weight})
     await db.insert(prefixes).values({name: name, color: color, weight: weight}).onConflictDoUpdate({target: prefixes.name, set: {color: color, weight: weight}});
     if (env.TAM3_REMOTE) {
         const res = await fetch(`${env.TAM3_REMOTE}/api/prefixes/?api_key=${env.TAM3_REMOTE_KEY}`, {

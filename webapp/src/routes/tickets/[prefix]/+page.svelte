@@ -1,7 +1,6 @@
 <script>
     import { browser } from '$app/environment';
     import FormHeader from '$lib/components/FormHeader.svelte';
-    import hotkeys from 'hotkeys-js';
 
     const { data } = $props();
     let prefix = {...data.prefix};
@@ -30,13 +29,13 @@
             };
         },
         prevPage: () => {
-            const diff = pagerForm.id_to - pagerForm.id_from + 1;
+            const diff = current_tickets.length;
             pagerForm.id_from = pagerForm.id_from - diff;
             pagerForm.id_to = pagerForm.id_to - diff;
             functions.refreshPage()
         },
         nextPage: () => {
-            const diff = pagerForm.id_to - pagerForm.id_from + 1;
+            const diff = current_tickets.length;
             pagerForm.id_from = pagerForm.id_from + diff;
             pagerForm.id_to = pagerForm.id_to + diff;
             functions.refreshPage()
@@ -87,7 +86,7 @@
             const to_save = current_tickets.filter((ticket) => ticket.changed === true);
             const res = await fetch(`/api/tickets`, {body: JSON.stringify(to_save), method: 'POST', headers: {'Content-Type': 'application/json'}});
             if (res.ok) {
-                current_tickets.map((ticket) => ticket.changed = false);
+                for (let ticket of current_tickets) {ticket.changed = false};
                 changeFocus(0);
             }
         }
@@ -95,16 +94,6 @@
     
     if (browser) {
         document.title = `${prefix.name} Ticket Entry`
-        hotkeys.filter = function(event) {return true}
-        hotkeys('alt+n', function(event) {event.preventDefault(); functions.nextPage(); return false});
-        hotkeys('alt+b', function(event) {event.preventDefault(); functions.prevPage(); return false});
-        hotkeys('alt+j', function(event) {event.preventDefault(); functions.duplicateDown(); return false});
-        hotkeys('alt+u', function(event) {event.preventDefault(); functions.duplicateUp(); return false});
-        hotkeys('alt+l', function(event) {event.preventDefault(); functions.gotoNext(); return false});
-        hotkeys('alt+o', function(event) {event.preventDefault(); functions.gotoPrev(); return false});
-        hotkeys('alt+c', function(event) {event.preventDefault(); functions.copy(); return false});
-        hotkeys('alt+v', function(event) {event.preventDefault(); functions.paste(); return false});
-        hotkeys('alt+s', function(event) {event.preventDefault(); functions.saveAll(); return false});
     }
 </script>
 

@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS api_keys (
 );
 
 CREATE TABLE IF NOT EXISTS prefixes (
-    `name` VARCHAR(255),
+    `name` VARCHAR(255) PRIMARY KEY,
     `color` VARCHAR(255),
     `weight` INT DEFAULT 0
 );
@@ -24,7 +24,8 @@ CREATE TABLE IF NOT EXISTS baskets (
     `b_id` INT,
     `description` VARCHAR(255),
     `donors` VARCHAR(255),
-    `winning_ticket` INT
+    `winning_ticket` INT,
+    PRIMARY KEY (`prefix`, `b_id`)
 );
 
 CREATE VIEW IF NOT EXISTS combined AS
