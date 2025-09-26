@@ -21,7 +21,7 @@ export async function GET({ params }) {
         for (let i=n_b_from; i <= n_b_to; i++) {
             let data = await db.select().from(baskets).where(and(eq(baskets.prefix, params.prefix), eq(baskets.b_id, i)));
             if (data[0]) {
-                r_dict[i] = {...data[0]};
+                r_dict[i] = {...data[0], changed: false};
             } else {
                 r_dict[i] = {prefix: params.prefix, b_id: i, description: "", donors: "", winning_ticket: 0, changed: false};
             }

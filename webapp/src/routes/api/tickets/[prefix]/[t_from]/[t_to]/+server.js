@@ -21,7 +21,7 @@ export async function GET({ params }) {
         for (let i=n_t_from; i <= n_t_to; i++) {
             let data = await db.select().from(tickets).where(and(eq(tickets.prefix, params.prefix), eq(tickets.t_id, i)));
             if (data[0]) {
-                r_dict[i] = {...data[0]};
+                r_dict[i] = {...data[0], changed: false};
             } else {
                 r_dict[i] = {prefix: params.prefix, t_id: i, first_name: "", last_name: "", phone_number: "", preference: "CALL", changed: false};
             }

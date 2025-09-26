@@ -34,7 +34,7 @@ export const combined = sqliteView('combined', {
 	winning_ticket: integer('winning_ticket'),
 	winner: text('winner')
 }).as(
-	sql`SELECT b.prefix, b.b_id, b.winning_ticket, CONCAT(t.last_name, ", ", t.first_name) AS winner
+	sql`SELECT b.prefix, b.b_id, b.winning_ticket, CONCAT(t.last_name, ', ', t.first_name) AS winner
 	FROM baskets b LEFT JOIN tickets t
 	ON b.prefix = t.prefix AND b.winning_ticket = t.t_id
 	ORDER BY b.prefix, b.b_id`
@@ -49,7 +49,7 @@ export const report = sqliteView('report', {
 	winning_ticket: integer('winning_ticket'),
 	description: text('description')
 }).as(
-	sql`SELECT b.prefix, CONCAT(t.last_name, ", ", t.first_name) AS winner_name, t.phone_number, \
+	sql`SELECT b.prefix, CONCAT(t.last_name, ', ', t.first_name) AS winner_name, t.phone_number, \
 	t.preference, b.b_id, b.winning_ticket, b.description
 	FROM baskets b LEFT JOIN tickets t
 	ON b.prefix = t.prefix AND b.winning_ticket = t.t_id
