@@ -6,7 +6,7 @@ import { env } from "$env/dynamic/private";
 export async function GET({ params }) {
     let { name } = params;
     if (env.TAM3_REMOTE) {
-        const res = await fetch(`${env.TAM3_REMOTE}/prefixes/${name}/?api_key=${env.TAM3_REMOTE_KEY}`);
+        const res = await fetch(`${env.TAM3_REMOTE}/api/prefixes/${name}/?api_key=${env.TAM3_REMOTE_KEY}`);
         if (!res.ok) {
             return new Response(JSON.stringify({status: "Issue getting prefix."}), {status: res.status, statusText: res.statusText});
         }
@@ -26,7 +26,7 @@ export async function DELETE({ params }) {
     let { name } = params;
     await db.delete(prefixes).where(eq(prefixes.name, name))
     if (env.TAM3_REMOTE) {
-        const res = await fetch(`${env.TAM3_REMOTE}/prefixes/?api_key=${env.TAM3_REMOTE_KEY}&prefix_name=${name}`);
+        const res = await fetch(`${env.TAM3_REMOTE}/api/prefixes/?api_key=${env.TAM3_REMOTE_KEY}&prefix_name=${name}`);
         if (!res.ok) {
             return new Response(JSON.stringify({status: "Issue deleting prefix."}), {status: res.status, statusText: res.statusText});
         } else {

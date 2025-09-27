@@ -17,3 +17,15 @@ After cloning, cd'ing into webapp, and running `npm install` followed by `npm ru
 That is making prefixes.
 
 On the main menu press "Alt (or Option) + a" to toggle admin mode. Then click Prefix editor to open the form to edit prefixes.
+
+## Status
+
+Ticket Form: **functional**
+Basket Form: **functional**
+Drawing Form: **functional**
+
+By Name Report: **functional**
+Basket ID Report: **functional**
+Ticket Count Report: **not started**
+
+Deployment System: **not started** | Likely will Dockerize it first, then will move to possible Electron or Tauri option for desktop application.

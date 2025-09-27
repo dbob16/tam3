@@ -12,19 +12,19 @@ CREATE TABLE IF NOT EXISTS prefixes (
 CREATE TABLE IF NOT EXISTS tickets (
     `prefix` VARCHAR(255),
     `t_id` INT,
-    `first_name` VARCHAR(255),
-    `last_name` VARCHAR(255),
-    `phone_number` VARCHAR(255),
-    `preference` VARCHAR(20),
+    `first_name` VARCHAR(255) DEFAULT "",
+    `last_name` VARCHAR(255) DEFAULT "",
+    `phone_number` VARCHAR(255) DEFAULT "",
+    `preference` VARCHAR(20) DEFAULT "CALL",
     PRIMARY KEY (`prefix`, `t_id`)
 );
 
 CREATE TABLE IF NOT EXISTS baskets (
     `prefix` VARCHAR(255),
     `b_id` INT,
-    `description` VARCHAR(255),
-    `donors` VARCHAR(255),
-    `winning_ticket` INT,
+    `description` VARCHAR(255) DEFAULT "",
+    `donors` VARCHAR(255) DEFAULT "",
+    `winning_ticket` INT DEFAULT 0,
     PRIMARY KEY (`prefix`, `b_id`)
 );
 

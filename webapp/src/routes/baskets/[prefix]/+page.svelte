@@ -44,7 +44,7 @@
         duplicateDown: () => {
             const next_idx = current_idx + 1;
             if (current_baskets[next_idx]) {
-                current_baskets[next_idx] = {...current_baskets[current_idx], b_id: current_baskets[next_idx].b_id, changed: true};
+                current_baskets[next_idx] = {...current_baskets[current_idx], b_id: current_baskets[next_idx].b_id, winning_ticket: current_baskets[next_idx].winning_ticket, changed: true};
                 changeFocus(next_idx);
             } else {
                 changeFocus(next_idx);
@@ -53,7 +53,7 @@
         duplicateUp: () => {
             const prev_idx = current_idx - 1;
             if (prev_idx >= 0) {
-                current_baskets[prev_idx] = {...current_baskets[current_idx], b_id: current_baskets[prev_idx].b_id, changed: true};
+                current_baskets[prev_idx] = {...current_baskets[current_idx], b_id: current_baskets[prev_idx].b_id, winning_ticket: current_baskets[prev_idx].winning_ticket, changed: true};
                 changeFocus(prev_idx);
             } else {
                 changeFocus(prev_idx);

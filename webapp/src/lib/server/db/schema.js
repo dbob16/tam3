@@ -10,10 +10,10 @@ export const prefixes = sqliteTable('prefixes', {
 export const tickets = sqliteTable('tickets', {
 	prefix: text('prefix'),
 	t_id: integer('t_id'),
-	first_name: text('first_name'),
-	last_name: text('last_name'),
-	phone_number: text('phone_number'),
-	preference: text('preference')
+	first_name: text('first_name').default(''),
+	last_name: text('last_name').default(''),
+	phone_number: text('phone_number').default(''),
+	preference: text('preference').default('CALL')
 }, (table) => [
 	primaryKey({columns: [table.prefix, table.t_id]})
 ]);
@@ -21,8 +21,8 @@ export const tickets = sqliteTable('tickets', {
 export const baskets = sqliteTable('baskets', {
 	prefix: text('prefix'),
 	b_id: integer('b_id'),
-	description: text('description'),
-	donors: text('donors'),
+	description: text('description').default(''),
+	donors: text('donors').default(''),
 	winning_ticket: integer('winning_ticket').default(0)
 }, (table) => [
 	primaryKey({columns: [table.prefix, table.b_id]})

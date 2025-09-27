@@ -47,8 +47,8 @@
   </div>
   <div><h2>Reports:</h2></div>
   <div class="flex-row {current_prefix.color}">
-    <a href="/report/byname/{current_prefix.name}/" target="_blank" class="styled">By Name</a>
-    <a href="/report/bybasket/{current_prefix.name}/" target="_blank" class="styled">By Basket ID</a>
+    <a href="/reports/byname/{current_prefix.name}/" target="_blank" class="styled">By Name</a>
+    <a href="/reports/bybasket/{current_prefix.name}/" target="_blank" class="styled">By Basket ID</a>
   </div>
   {#if admin_mode}
   <div><h2>Admin Mode:</h2></div>

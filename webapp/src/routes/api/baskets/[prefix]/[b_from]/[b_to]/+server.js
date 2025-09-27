@@ -6,7 +6,7 @@ import { eq, and } from "drizzle-orm";
 export async function GET({ params }) {
     let n_b_from = parseInt(params.b_from), n_b_to = parseInt(params.b_to);
     if (env.TAM3_REMOTE) {
-        const res = await fetch(`${env.TAM3_REMOTE}/api/baskets/${n_b_from}/${n_b_to}/?api_key=${env.TAM3_REMOTE_KEY}`);
+        const res = await fetch(`${env.TAM3_REMOTE}/api/baskets/${params.prefix}/${n_b_from}/${n_b_to}/?api_key=${env.TAM3_REMOTE_KEY}`);
         if (!res.ok) {
             return new Response(JSON.stringify({detail: "Unable to fetch baskets"}), {status: res.status, statusText: res.statusText});
         };
