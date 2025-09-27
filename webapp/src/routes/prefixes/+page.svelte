@@ -5,6 +5,11 @@
     let prefix_form = $state({name: "", color: "white", weight: 0})
     let status = $state(``)
 
+    function selectName() {
+        const i_name = document.getElementById("i_name");
+        i_name.select();
+    }
+
     async function getPrefixes() {
         const res = await fetch("/api/prefixes/");
         if (!res.ok) {
@@ -30,6 +35,7 @@
         } else {
             status = `${res.statusText}`;
             getPrefixes();
+            selectName();
         }
     }
 
@@ -45,6 +51,7 @@
 
     if (browser) {
         getPrefixes()
+        document.title = "Edit Prefixes"
     }
 </script>
 
@@ -52,7 +59,7 @@
 <div class="form">
     <div>
         <div>Name</div>
-        <div><input type="text" class="one-hundred" bind:value={prefix_form.name}></div>
+        <div><input type="text" id="i_name" class="one-hundred" bind:value={prefix_form.name}></div>
     </div>
     <div>
         <div>Color</div>

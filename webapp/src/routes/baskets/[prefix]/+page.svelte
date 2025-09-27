@@ -13,7 +13,7 @@
     function changeFocus(idx) {
         const focusDe = document.getElementById(`${idx}_de`);
         if (focusDe) {
-            focusDe.focus();
+            focusDe.select();
         }
     }
 

@@ -17,6 +17,7 @@ a.styled, button.styled {
 
 a.styled:hover, button.styled:hover {
     text-decoration: underline;
+    cursor: pointer;
 }
 
 .tb-margin {

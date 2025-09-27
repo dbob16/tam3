@@ -12,7 +12,7 @@
     function changeFocus(idx) {
         const focusFn = document.getElementById(`${idx}_fn`);
         if (focusFn) {
-            focusFn.focus();
+            focusFn.select();
         }
     }
 
