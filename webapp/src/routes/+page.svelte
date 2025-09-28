@@ -2,6 +2,7 @@
   import { browser } from "$app/environment";
   import { env } from "$env/dynamic/public";
   import hotkeys from "hotkeys-js";
+  import favicon from "$lib/assets/favicon.svg"
 
   let { data } = $props();
   let prefix_name = $state("");
@@ -31,7 +32,16 @@
 </script>
 
 <div class="main-menu">
-  <h1>{venue} - Main Menu</h1>
+  <div class="flex-row">
+    <img src="{favicon}" alt="TAM3 Icon - Red ticket with TAM3 on it" class="icon">
+    <h1>{venue} - Main Menu</h1>
+  </div>
+  <div class="universal-reports flex-row tb-margin">
+    <a href="/counts" target="_blank" class="styled">Counts</a>
+  </div>
+  <div>
+    <h2>Select Prefix:</h2>
+  </div>
   <div class="prefix-selector">
     <select style="width: 100%; box-sizing: border-box;" bind:value={prefix_name}>
       {#each all_prefixes as prefix}
@@ -63,7 +73,7 @@
 </div>
 
 <style>
-  .prefix-selector select {
-    width: 100%;
+  img.icon {
+    max-width: 150px;
   }
 </style>

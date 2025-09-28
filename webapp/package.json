@@ -26,6 +26,7 @@
 	},
 	"dependencies": {
 		"hotkeys-js": "^3.13.15",
+		"drizzle-kit": "^0.30.2",
 		"@libsql/client": "^0.14.0"
 	}
 }
