@@ -55,3 +55,16 @@ export const report = sqliteView('report', {
 	ON b.prefix = t.prefix AND b.winning_ticket = t.t_id
 	ORDER BY b.prefix, winner_name, t.phone_number, t.preference, b.b_id`
 );
+
+export const counts = sqliteView('counts', {
+	prefix: text('prefix'),
+	total_sold: integer('total_sold'),
+	unique_sold: integer('unique_sold')
+}).as(
+	sql`SELECT prefix, COUNT(*) AS total_sold, COUNT(DISTINCT CONCAT(first_name,last_name,phone_number)) AS unique_sold
+	FROM tickets
+	GROUP BY prefix
+	UNION ALL
+	SELECT 'Total' AS prefix, COUNT(*) AS total_sold, COUNT(DISTINCT CONCAT(first_name,last_name,phone_number)) AS unique_sold
+	FROM tickets;`
+)

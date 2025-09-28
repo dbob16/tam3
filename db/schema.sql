@@ -39,3 +39,11 @@ SELECT b.prefix, CONCAT(t.last_name, ", ", t.first_name) AS winner_name, t.phone
 FROM baskets b LEFT JOIN tickets t
 ON b.prefix = t.prefix AND b.winning_ticket = t.t_id
 ORDER BY b.prefix, winner_name, t.phone_number, t.preference, b.b_id;
+
+CREATE VIEW IF NOT EXISTS counts AS
+SELECT prefix, COUNT(*) AS total_sold, COUNT(DISTINCT CONCAT(first_name,last_name,phone_number)) AS unique_sold
+FROM tickets
+GROUP BY prefix
+UNION ALL
+SELECT 'Total' AS prefix, COUNT(*) AS total_sold, COUNT(DISTINCT CONCAT(first_name,last_name,phone_number)) AS unique_sold
+FROM tickets;
