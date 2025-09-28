@@ -21,11 +21,19 @@ On the main menu press "Alt (or Option) + a" to toggle admin mode. Then click Pr
 ## Status
 
 Ticket Form: **functional**
+
 Basket Form: **functional**
+
 Drawing Form: **functional**
 
+***
+
 By Name Report: **functional**
+
 Basket ID Report: **functional**
+
 Ticket Count Report: **not started**
+
+***
 
 Deployment System: **not started** | Likely will Dockerize it first, then will move to possible Electron or Tauri option for desktop application.

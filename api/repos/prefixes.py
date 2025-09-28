@@ -26,12 +26,16 @@ class PrefixRepo(Repo):
         return Prefix(*result)
 
     def add_one(self, prefix: Prefix) -> str:
-        self.cur.execute(
-            "REPLACE INTO prefixes VALUES (%s, %s, %s)",
-            (prefix.name, prefix.color, prefix.weight),
-        )
+        self.cur.execute("REPLACE INTO prefixes VALUES (%s, %s, %s)", (prefix.name, prefix.color, prefix.weight))
         self.conn.commit()
         return "Prefix inserted successfully."
+    
+    def add_list(self, prefix_list: list[Prefix]):
+        for prefix in prefix_list:
+            self.cur.execute("REPLACE INTO prefixes VALUES (%s, %s, %s)", (prefix.name, prefix.color, prefix.weight))
+        self.conn.commit()
+        return "Prefixes inserted successfully."
+
 
     def del_one(self, prefix_name: str) -> str:
         self.cur.execute("DELETE FROM prefixes WHERE name = %s", (prefix_name,))

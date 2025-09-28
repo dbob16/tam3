@@ -93,7 +93,7 @@
     };
     
     if (browser) {
-        document.title = `${prefix.name} Ticket Entry`
+        document.title = `${prefix.name} Ticket Entry`;
     }
 </script>
 
