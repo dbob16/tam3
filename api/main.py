@@ -2,6 +2,9 @@
 
 from fastapi import FastAPI
 from sys import argv
+from exceptions import bad_key
+
+from repos.api_keys import ApiKeyRepo
 
 from routers.prefixes import prefix_router
 from routers.tickets import ticket_router
@@ -15,6 +18,12 @@ if argv[1] == "run":
     app = FastAPI(title="TAM3 API Server", docs_url=None, redoc_url=None)
 else:
     app = FastAPI(title="TAM3 API Server")
+
+@app.get("/api/")
+def remote_check(api_key: str = ""):
+    if not ApiKeyRepo().check_api(api_key):
+        return {"status": "healthy", "auth": False, "whoami": "TAM3 Server"}
+    return {"status": "healthy", "auth": True, "whoami": "TAM3 Server"}
 
 app.include_router(prefix_router)
 app.include_router(ticket_router)

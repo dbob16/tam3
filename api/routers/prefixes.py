@@ -21,10 +21,13 @@ def get_one_prefix(api_key: str, prefix_name: str):
 
 
 @prefix_router.post("/")
-def post_one_prefix(api_key: str, p: Prefix):
+def post_one_prefix(api_key: str, p: Prefix | list[Prefix]):
     if not ApiKeyRepo().check_api(api_key):
         raise bad_key
-    rep_detail = PrefixRepo().add_one(p)
+    if type(p) is list:
+        rep_detail = PrefixRepo().add_list(p)
+    elif type(p) is Prefix:
+        rep_detail = PrefixRepo().add_one(p)
     return {"detail": rep_detail}
 
 

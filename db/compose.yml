@@ -1,6 +1,6 @@
 services:
   db:
-    image: dbob16/tam3-db:0.0.1
+    image: dbob16/tam3-db:0.1.0
     restart: always
     hostname: mariadb
     container_name: mariadb

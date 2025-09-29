@@ -64,8 +64,13 @@
   <div><h2>Admin Mode:</h2></div>
   <div class="flex-row {current_prefix.color}">
     <a href="/prefixes" target="_blank" class="styled">Prefix Editor</a>
+    <a href="/backuprestore" target="_blank" class="styled">Backup/Restore</a>
   </div>
   {/if}
+</div>
+
+<div class="status tb-margin">
+  {data.status}
 </div>
 
 <div class="annotation">
