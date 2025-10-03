@@ -8,7 +8,7 @@ services:
       MARIADB_USER: tam3
       MARIADB_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - "${DB_LOCATION}:/var/lib/mysql:z"
+      - "${DB_LOCATION}:/var/lib/mysql:rw,z"
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       start_period: 10s
@@ -26,3 +26,11 @@ services:
       TAM3_DB_PASSWD: ${DB_PASSWORD}
     ports:
       - "8000:80"
+  tam3-rp:
+    image: docker.io/nginx:stable
+    restart: always
+    ports:
+      - "8443:443"
+    volumes:
+      - "./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro,z"
+      - "./nginx/certs:/certs:ro,z"

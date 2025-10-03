@@ -1,0 +1,1 @@
+podman compose exec tam3-api /app/key.py list

@@ -1,0 +1,20 @@
+{
+  "short_name": "TAM3",
+  "name": "Ticket Auction Manager 3",
+  "icons": [
+    {
+      "src": "/icons/tam3x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/tam3x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "black",
+  "background_color": "white"
+}

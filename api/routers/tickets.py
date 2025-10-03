@@ -23,7 +23,7 @@ def get_prefix_ticket_one(api_key: str, prefix: str, t_id: int) -> Ticket:
         raise bad_key
     return TicketRepo().get_prefix_one(prefix, t_id)
 
-@ticket_router.get("/{prefix}/{t_from}/{t_to}")
+@ticket_router.get("/{prefix}/{t_from}/{t_to}/")
 def get_prefix_ticket_range(api_key: str, prefix: str, t_from: int, t_to: int) -> list[Ticket]:
     if not ApiKeyRepo().check_api(api_key):
         raise bad_key
