@@ -26,7 +26,7 @@ export async function DELETE({ params }) {
     let { name } = params;
     await db.delete(prefixes).where(eq(prefixes.name, name))
     if (env.TAM3_REMOTE) {
-        const res = await fetch(`${env.TAM3_REMOTE}/api/prefixes/?api_key=${env.TAM3_REMOTE_KEY}&prefix_name=${name}`);
+        const res = await fetch(`${env.TAM3_REMOTE}/api/prefixes/?api_key=${env.TAM3_REMOTE_KEY}&prefix_name=${name}`, {method: 'DELETE'});
         if (!res.ok) {
             return new Response(JSON.stringify({status: "Issue deleting prefix."}), {status: res.status, statusText: res.statusText});
         } else {

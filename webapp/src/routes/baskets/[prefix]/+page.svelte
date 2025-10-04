@@ -128,6 +128,9 @@
         tbody tr:nth-child(2n) {
             background-color: #eeeeee;
         }
+        tbody tr:focus-within td:first-child {
+            font-weight: bold;
+        }
         input {
             background: transparent;
             border: solid 1px #000000;
