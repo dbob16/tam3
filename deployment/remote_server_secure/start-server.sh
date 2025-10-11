@@ -11,7 +11,7 @@ echo "DB_PASSWORD=${gen_password}" >> .env
 
 if [ -x "$(command -v docker)" ]; then
 docker compose up -d
-elif [ -x "$(command -v podman)"]; then
+elif [ -x "$(command -v podman)" ]; then
 podman compose up -d
 else
 echo "Neither Docker nor Podman are installed. Please install whichever you prefer and try again."
