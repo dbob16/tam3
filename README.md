@@ -20,20 +20,8 @@ On the main menu press "Alt (or Option) + a" to toggle admin mode. Then click Pr
 
 ## Status
 
-Ticket Form: **functional**
+Features from TAM-API are all hashed out. Currently the project is in working order, just hashing out different deployment options.
 
-Basket Form: **functional**
+## How-to
 
-Drawing Form: **functional**
-
-***
-
-By Name Report: **functional**
-
-Basket ID Report: **functional**
-
-Ticket Count Report: **not started**
-
-***
-
-Deployment System: **not started** | Likely will Dockerize it first, then will move to possible Electron or Tauri option for desktop application.
+Content on how to deploy and use will likely end up in the Wiki tab as I get time to publish such effects.
