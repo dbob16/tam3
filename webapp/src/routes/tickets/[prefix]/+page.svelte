@@ -13,7 +13,7 @@
         const focusFn = document.getElementById(`${idx}_fn`);
         if (focusFn) {
             focusFn.select();
-            focusFn.scrollIntoView({block: "end"});
+            focusFn.scrollIntoView({block: "center"});
         }
     }
 

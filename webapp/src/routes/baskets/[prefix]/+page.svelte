@@ -14,7 +14,7 @@
         const focusDe = document.getElementById(`${idx}_de`);
         if (focusDe) {
             focusDe.select();
-            focusDe.scrollIntoView({block: "end"});
+            focusDe.scrollIntoView({block: "center"});
         }
     }
 

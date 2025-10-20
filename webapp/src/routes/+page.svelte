@@ -40,14 +40,19 @@
     <a href="/counts" target="_blank" class="styled">Counts</a>
   </div>
   <div>
-    <h2>Select Prefix:</h2>
+    <h2>Current Prefix: {current_prefix.name}</h2>
   </div>
-  <div class="prefix-selector">
-    <select style="width: 100%; box-sizing: border-box;" bind:value={prefix_name}>
-      {#each all_prefixes as prefix}
-      <option value={prefix.name}>{prefix.name}</option>
-      {/each}
-    </select>
+  <div class="change_title">
+    <h2>Change Prefix:</h2>
+  </div>
+  <div class="prefix-selector flex-row">
+    {#each all_prefixes as prefix}
+    <div class={prefix.color}>
+      <button class="styled" onclick={() => {
+        prefix_name = prefix.name;
+      }}>{prefix.name}</button>
+    </div>
+    {/each}
   </div>
   <div><h2>Forms:</h2></div>
   <div class="flex-row {current_prefix.color}">
@@ -60,14 +65,14 @@
     <a href="/reports/byname/{current_prefix.name}/" target="_blank" class="styled">By Name</a>
     <a href="/reports/bybasket/{current_prefix.name}/" target="_blank" class="styled">By Basket ID</a>
   </div>
-  {#if admin_mode}
-  <div><h2>Admin Mode:</h2></div>
-  <div class="flex-row {current_prefix.color}">
+</div>
+{#if admin_mode}
+<div><h2>Admin Mode:</h2></div>
+  <div class="flex-row">
     <a href="/prefixes" target="_blank" class="styled">Prefix Editor</a>
     <a href="/backuprestore" target="_blank" class="styled">Backup/Restore</a>
-  </div>
-  {/if}
 </div>
+{/if}
 
 <div class="status tb-margin">
   {data.status}

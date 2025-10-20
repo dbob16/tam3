@@ -13,7 +13,7 @@
         const focusWt = document.getElementById(`${idx}_wt`);
         if (focusWt) {
             focusWt.select();
-            focusWt.scrollIntoView({block: "end"});
+            focusWt.scrollIntoView({block: "center"});
         }
     }
 

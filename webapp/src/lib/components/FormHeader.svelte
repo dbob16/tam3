@@ -28,7 +28,12 @@
             <input type="number" bind:value={pagerForm.id_from}>
             <div style="font-size: 22pt">-</div>
             <input type="number" bind:value={pagerForm.id_to}>
-            <button class="styled" onclick={functions.refreshPage}>Refresh</button>
+            <button class="styled" onclick={() => {
+                if (Math.abs(pagerForm.id_to - pagerForm.id_from) > 800) {
+                    pagerForm.id_to = pagerForm.id_from + 799;
+                }
+                setTimeout(functions.refreshPage, 50);
+            }}>Refresh</button>
         </div>
         <div class="flex-row">
             <button class="styled" title="Alt + B" tabindex="-1" onclick={functions.prevPage}>Prev Page</button>
