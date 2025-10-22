@@ -36,7 +36,7 @@
     <img src="{favicon}" alt="TAM3 Icon - Red ticket with TAM3 on it" class="icon">
     <h1>{venue} - Main Menu</h1>
   </div>
-  {#if prefix_name !== ""}
+  {#if all_prefixes.length > 0}
   <div class="universal-reports flex-row tb-margin">
     <a href="/counts" target="_blank" class="styled">Counts</a>
   </div>
@@ -66,6 +66,8 @@
     <a href="/reports/byname/{current_prefix.name}/" target="_blank" class="styled">By Name</a>
     <a href="/reports/bybasket/{current_prefix.name}/" target="_blank" class="styled">By Basket ID</a>
   </div>
+  {:else}
+  <p>There aren't any prefixes available, please create them.</p>
   {/if}
 </div>
 {#if admin_mode}
