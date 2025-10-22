@@ -1,12 +1,19 @@
 :root {
+    font-family: serif;
+    font-size: 14pt;
     --button-fg: #333333;
     --button-bg: #eeeeee;
     --button-border: #333333;
 }
 
+button, input, select, option {
+    font-family: serif;
+    font-size: 14pt;
+}
+
 a.styled, button.styled {
     display: block;
-    font: bold 12pt Arial;
+    font-weight: bold;
     text-decoration: none;
     background-color: var(--button-bg);
     color: var(--button-fg);
@@ -20,7 +27,7 @@ a.styled, button.styled {
 }
 
 .active {
-    border: 1px solid #000000;
+    border: 2px solid #000000;
     border-radius: 0.13rem;
 }
 
