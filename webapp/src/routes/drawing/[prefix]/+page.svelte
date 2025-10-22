@@ -142,6 +142,8 @@
         }
         tbody tr:focus-within td:first-child {
             font-weight: bold;
+            border-top: solid 1px;
+            border-bottom: solid 1px;
         }
         input {
             background: transparent;
