@@ -7,6 +7,8 @@ COPY . .
 RUN npm install && npm run build
 
 ENV DATABASE_URL=file:/data/local.db
+ENV BODY_SIZE_LIMIT=100M
+ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 
 COPY deploy/start-server.sh start-server.sh
 

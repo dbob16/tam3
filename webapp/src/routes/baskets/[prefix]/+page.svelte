@@ -94,6 +94,11 @@
 
     if (browser) {
         document.title = `${prefix.name} Basket Entry`
+        window.addEventListener("beforeunload", function(e) {
+            if (current_baskets.filter(basket => basket.changed === true).length > 0) {
+                e.preventDefault();
+            }
+        })
     }
 </script>
 

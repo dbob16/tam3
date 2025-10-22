@@ -9,7 +9,7 @@
     let report_subject = $state("All Preferences");
 
     if (browser) {
-        document.title = `${prefix.name} Report By Name`
+        document.title = `${prefix.name} Report By Basket ID`
     }
 </script>
 

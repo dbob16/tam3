@@ -1,6 +1,15 @@
 import { env } from "$env/dynamic/private";
 import { db } from "$lib/server/db";
 import { prefixes, tickets, baskets } from "$lib/server/db/schema";
+import { sql } from "drizzle-orm";
+
+function chunkArray(arr, chunkSize) {
+    const chunks = [];
+    for (let i = 0; i < arr.length; i += chunkSize) {
+        chunks.push(arr.slice(i, i + chunkSize));
+    }
+    return chunks;
+}
 
 export async function GET() {
     if (env.TAM3_REMOTE) {
@@ -20,16 +29,16 @@ export async function GET() {
 
 export async function POST({ request }) {
     const req = await request.json();
-    for (let prefix of req.prefixes) {
-        await db.insert(prefixes).values({name: prefix.name, color: prefix.color, weight: prefix.weight}).onConflictDoUpdate({target: prefixes.name, set: {color: prefix.color, weight: prefix.weight}});
+    for (let prefixChunk of chunkArray(req.prefixes, 300)) {
+        await db.insert(prefixes).values(prefixChunk).onConflictDoUpdate({target: prefixes.name, set: {color: sql`excluded.color`, weight: sql`excluded.weight`}});
     };
-    for (let ticket of req.tickets) {
-            await db.insert(tickets).values({prefix: ticket.prefix, t_id: ticket.t_id, first_name: ticket.first_name, last_name: ticket.last_name, phone_number: ticket.phone_number, preference: ticket.preference})
-                .onConflictDoUpdate({target: [tickets.prefix, tickets.t_id], set: {first_name: ticket.first_name, last_name: ticket.last_name, phone_number: ticket.phone_number, preference: ticket.preference}});
+    for (let ticketChunk of chunkArray(req.tickets, 300)) {
+            await db.insert(tickets).values(ticketChunk)
+                .onConflictDoUpdate({target: [tickets.prefix, tickets.t_id], set: {first_name: sql`excluded.first_name`, last_name: sql`excluded.last_name`, phone_number: sql`excluded.phone_number`, preference: sql`excluded.preference`}});
     };
-    for (let basket of req.baskets) {
-            await db.insert(baskets).values({prefix: basket.prefix, b_id: basket.b_id, description: basket.description, donors: basket.donors, winning_ticket: basket.winning_ticket})
-                .onConflictDoUpdate({target: [baskets.prefix, baskets.b_id], set: {description: basket.description, donors: basket.donors, winning_ticket: basket.winning_ticket}})
+    for (let basketChunk of chunkArray(req.baskets, 300)) {
+            await db.insert(baskets).values(basketChunk)
+                .onConflictDoUpdate({target: [baskets.prefix, baskets.b_id], set: {description: sql`excluded.description`, donors: sql`excluded.donors`, winning_ticket: sql`excluded.winning_ticket`}})
     };
     if (env.TAM3_REMOTE) {
         const res = await fetch(`${env.TAM3_REMOTE}/api/backuprestore/?api_key=${env.TAM3_REMOTE_KEY}`, {

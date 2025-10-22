@@ -93,6 +93,11 @@
 
     if (browser) {
         document.title = `${prefix.name} Drawing Form`
+        window.addEventListener("beforeunload", function(e) {
+            if (current_drawings.filter(drawing => drawing.changed === true).length > 0) {
+                e.preventDefault();
+            }
+        });
     }
 </script>
 

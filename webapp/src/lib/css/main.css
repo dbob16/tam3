@@ -15,6 +15,15 @@ a.styled, button.styled {
     border-radius: 0.25rem;
 }
 
+.p025 {
+    padding: 0.25rem;
+}
+
+.active {
+    border: 1px solid #000000;
+    border-radius: 0.13rem;
+}
+
 a.styled:hover, button.styled:hover {
     text-decoration: underline;
     cursor: pointer;

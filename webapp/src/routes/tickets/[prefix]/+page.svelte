@@ -95,6 +95,11 @@
     
     if (browser) {
         document.title = `${prefix.name} Ticket Entry`;
+        window.addEventListener("beforeunload", function(e) {
+            if (current_tickets.filter(ticket => ticket.changed === true).length > 0) {
+                e.preventDefault();
+            }
+        });
     }
 </script>
 
