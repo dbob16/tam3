@@ -5,8 +5,8 @@
   import favicon from "$lib/assets/favicon.svg"
 
   let { data } = $props();
+  const all_prefixes = [...data.prefixes];
   let prefix_name = $state("");
-  let all_prefixes = $state([]);
   let current_prefix = $state({name: "", color: "", weight: 0});
   let admin_mode = $state(false);
   const venue = env.PUBLIC_TAM3_VENUE || "TAM3";
@@ -19,7 +19,6 @@
   })
   
   if (browser) {
-    all_prefixes = [...data.prefixes];
     document.title = `${venue} - Main Menu`;
     hotkeys.filter = function(event) {return true};
     hotkeys('alt+a', function(event) {event.preventDefault(); admin_mode = !admin_mode; return false;});
