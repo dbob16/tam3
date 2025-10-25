@@ -1,4 +1,4 @@
-import { env } from "process";
+import { env } from "$env/dynamic/private";
 import { db } from "$lib/server/db";
 import { report } from "$lib/server/db/schema";
 import { eq } from "drizzle-orm";

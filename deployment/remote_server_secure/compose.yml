@@ -1,6 +1,6 @@
 services:
   tam3-db:
-    image: docker.io/dbob16/tam3-db:0.1.1
+    image: docker.io/dbob16/tam3-db:0.2.0
     restart: always
     environment:
       MARIADB_RANDOM_ROOT_PASSWORD: 1
@@ -16,7 +16,7 @@ services:
       timeout: 5s
       retries: 3
   tam3-api:
-    image: docker.io/dbob16/tam3-api:0.1.1
+    image: docker.io/dbob16/tam3-api:0.2.0
     restart: always
     environment:
       TAM3_DATA_PATH: /data

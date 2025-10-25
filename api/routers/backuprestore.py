@@ -9,6 +9,12 @@ from repos.tickets import Ticket, TicketRepo
 from repos.baskets import Basket, BasketRepo
 from repos.template import Repo
 
+def chunk_list(in_lst: list, chunk_size: int):
+    chunks = []
+    for i in range(0, len(in_lst), chunk_size):
+        chunks.append(in_lst[i:i + chunk_size])
+    return chunks
+
 @dataclass
 class BackupFile:
     prefixes: List[Prefix] = field(default_factory=list)
@@ -21,8 +27,10 @@ class BackupFileRepo:
         return new_file
     def post_file(self, uploaded_file: BackupFile) -> str:
         PrefixRepo().add_list(uploaded_file.prefixes)
-        TicketRepo().post_list(uploaded_file.tickets)
-        BasketRepo().post_list(uploaded_file.baskets)
+        for ticket_chunk in chunk_list(uploaded_file.tickets, 300):
+            TicketRepo().post_list(ticket_chunk)
+        for basket_chunk in chunk_list(uploaded_file.baskets, 300):
+            BasketRepo().post_list(basket_chunk)
         return "File posted successfully."
     
 backup_router = APIRouter(prefix="/api/backuprestore")
