@@ -1,6 +1,8 @@
 import { env } from "$env/dynamic/private";
 import { db } from "$lib/server/db";
+import { sql } from "drizzle-orm";
 import { baskets, combined } from "$lib/server/db/schema";
+import { chunkArray } from "$lib/server/chunkArray";
 
 export async function GET() {
     if (env.TAM3_REMOTE) {
@@ -21,9 +23,9 @@ export async function GET() {
 
 export async function POST({ request }) {
     const r_data = await request.json()
-    for (let winner of r_data) {
-        await db.insert(baskets).values({prefix: winner.prefix, b_id: winner.b_id, winning_ticket: winner.winning_ticket})
-            .onConflictDoUpdate({target: [baskets.prefix, baskets.b_id], set: {winning_ticket: winner.winning_ticket}})
+    for (let winnerChunk of chunkArray(r_data, 300)) {
+        await db.insert(baskets).values(winnerChunk)
+            .onConflictDoUpdate({target: [baskets.prefix, baskets.b_id], set: {winning_ticket: sql`excluded.winning_ticket`}})
     }
     if (env.TAM3_REMOTE) {
         const res = await fetch(`${env.TAM3_REMOTE}/api/combined/?api_key=${env.TAM3_REMOTE_KEY}`, {

@@ -10,7 +10,7 @@ services:
       MARIADB_USER: tam3
       MARIADB_PASSWORD: tam3
     volumes:
-      - "tam3-db:/var/lib/mysql"
+      - "tam3-db:/var/lib/mysql:rw,z"
     ports:
       - 127.0.0.1:3306:3306
   adminer:

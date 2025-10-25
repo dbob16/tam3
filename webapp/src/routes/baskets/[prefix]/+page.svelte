@@ -20,7 +20,7 @@
 
     const functions = {
         refreshPage: async () => {
-            if (current_baskets.length > 0) {
+            if (current_baskets.filter(basket => basket.changed === true).length > 0) {
                 functions.saveAll()
             }
             const res = await fetch(`/api/baskets/${prefix.name}/${pagerForm.id_from}/${pagerForm.id_to}`);

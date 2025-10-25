@@ -19,7 +19,7 @@
 
     const functions = {
         refreshPage: async () => {
-            if (current_tickets.length > 0) {
+            if (current_tickets.filter(ticket => ticket.changed === true).length > 0) {
                 functions.saveAll();
             };
             const res = await fetch(`/api/tickets/${prefix.name}/${pagerForm.id_from}/${pagerForm.id_to}`);

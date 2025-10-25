@@ -1,6 +1,8 @@
 import { db } from "$lib/server/db";
+import { sql } from "drizzle-orm";
 import { tickets } from "$lib/server/db/schema";
 import { env } from "$env/dynamic/private";
+import { chunkArray } from "$lib/server/chunkArray";
 
 export async function GET() {
     if (env.TAM3_REMOTE) {
@@ -30,9 +32,9 @@ export async function GET() {
 
 export async function POST({ request }) {
     const i_tickets = await request.json();
-    for (let ticket of i_tickets) {
-        await db.insert(tickets).values({prefix: ticket.prefix, t_id: ticket.t_id, first_name: ticket.first_name, last_name: ticket.last_name, phone_number: ticket.phone_number, preference: ticket.preference})
-            .onConflictDoUpdate({target: [tickets.prefix, tickets.t_id], set: {first_name: ticket.first_name, last_name: ticket.last_name, phone_number: ticket.phone_number, preference: ticket.preference}});
+    for (let ticketChunk of chunkArray(i_tickets, 300)) {
+        await db.insert(tickets).values(ticketChunk)
+            .onConflictDoUpdate({target: [tickets.prefix, tickets.t_id], set: {first_name: sql`excluded.first_name`, last_name: sql`excluded.last_name`, phone_number: sql`excluded.phone_number`, preference: sql`excluded.preference`}});
     };
     if (env.TAM3_REMOTE) {
         const res = await fetch(`${env.TAM3_REMOTE}/api/tickets/?api_key=${env.TAM3_REMOTE_KEY}`, {

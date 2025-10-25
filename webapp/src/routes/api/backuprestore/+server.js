@@ -2,14 +2,7 @@ import { env } from "$env/dynamic/private";
 import { db } from "$lib/server/db";
 import { prefixes, tickets, baskets } from "$lib/server/db/schema";
 import { sql } from "drizzle-orm";
-
-function chunkArray(arr, chunkSize) {
-    const chunks = [];
-    for (let i = 0; i < arr.length; i += chunkSize) {
-        chunks.push(arr.slice(i, i + chunkSize));
-    }
-    return chunks;
-}
+import { chunkArray } from "$lib/server/chunkArray";
 
 export async function GET() {
     if (env.TAM3_REMOTE) {
