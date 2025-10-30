@@ -9,9 +9,9 @@ if [ $rmserver = "y" -o $rmserver = "Y" ]; then
 read -p "Enter the protocol, server host/ip, and port like "https://ip_or_host:8443" w/o quotes: " serveraddr
 read -p "Paste in (Ctrl + Shift + V on most terminal emulators) or enter the api key you generated for your server: " serverapi
 if [ -x "$(command -v docker)" ]; then
-docker run -d --name=tam3-webclient --restart=always -v ~/.config/TAM3/data:/data:rw,z -e TAM3_REMOTE=$serveraddr -e TAM3_REMOTE_KEY=$serverapi -e PUBLIC_TAM3_VENUE="$venuename" -p 127.0.0.1:8300:3000 docker.io/dbob16/tam3-webclient:0.1.1
+docker run -d --name=tam3-webclient --restart=always -v ~/.config/TAM3/data:/data:rw,z -e TAM3_REMOTE=$serveraddr -e TAM3_REMOTE_KEY=$serverapi -e PUBLIC_TAM3_VENUE="$venuename" -p 127.0.0.1:8300:3000 docker.io/dbob16/tam3-webclient:0.2.0
 elif [ -x "$(command -v podman)" ]; then
-podman run -d --name=tam3-webclient --restart=always -v ~/.config/TAM3/data:/data:rw,z -e TAM3_REMOTE=$serveraddr -e TAM3_REMOTE_KEY=$serverapi -e PUBLIC_TAM3_VENUE="$venuename" -p 127.0.0.1:8300:3000 docker.io/dbob16/tam3-webclient:0.1.1
+podman run -d --name=tam3-webclient --restart=always -v ~/.config/TAM3/data:/data:rw,z -e TAM3_REMOTE=$serveraddr -e TAM3_REMOTE_KEY=$serverapi -e PUBLIC_TAM3_VENUE="$venuename" -p 127.0.0.1:8300:3000 docker.io/dbob16/tam3-webclient:0.2.0
 runin_podman="true"
 else
 echo "Neither Docker nor Podman are installed. Please install whichever you prefer and try again."
