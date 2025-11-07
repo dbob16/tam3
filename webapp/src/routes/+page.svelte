@@ -74,6 +74,7 @@
   <div class="flex-row">
     <a href="/prefixes" target="_blank" class="styled">Prefix Editor</a>
     <a href="/backuprestore" target="_blank" class="styled">Backup/Restore</a>
+    <a href="/settings" target="_blank" class="styled">Settings</a>
 </div>
 {/if}
 

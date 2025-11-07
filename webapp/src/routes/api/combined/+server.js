@@ -1,10 +1,11 @@
-import { env } from "$env/dynamic/private";
+import { readSettings } from "$lib/server/settings";
 import { db } from "$lib/server/db";
 import { sql } from "drizzle-orm";
 import { baskets, combined } from "$lib/server/db/schema";
 import { chunkArray } from "$lib/server/chunkArray";
 
 export async function GET() {
+    const env = readSettings();
     if (env.TAM3_REMOTE) {
         const res = await fetch(`${env.TAM3_REMOTE}/api/combined/?api_key=${env.TAM3_REMOTE_KEY}`);
         if (!res.ok) {
@@ -22,6 +23,7 @@ export async function GET() {
 }
 
 export async function POST({ request }) {
+    const env = readSettings();
     const r_data = await request.json()
     for (let winnerChunk of chunkArray(r_data, 300)) {
         await db.insert(baskets).values(winnerChunk)

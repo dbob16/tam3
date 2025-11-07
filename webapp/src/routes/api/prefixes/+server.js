@@ -1,8 +1,9 @@
+import { readSettings } from "$lib/server/settings";
 import { db } from "$lib/server/db";
 import { prefixes } from "$lib/server/db/schema";
-import { env } from "$env/dynamic/private";
 
 export async function GET() {
+    const env = readSettings();
     if (env.TAM3_REMOTE) {
         const res = await fetch(`${env.TAM3_REMOTE}/api/prefixes/?api_key=${env.TAM3_REMOTE_KEY}`);
         if (!res.ok) {
@@ -17,6 +18,7 @@ export async function GET() {
 }
 
 export async function POST({ request }) {
+    const env = readSettings();
     const { name, color, weight } = await request.json();
     await db.insert(prefixes).values({name: name, color: color, weight: weight}).onConflictDoUpdate({target: prefixes.name, set: {color: color, weight: weight}});
     if (env.TAM3_REMOTE) {

@@ -1,9 +1,10 @@
+import { readSettings } from "$lib/server/settings";
 import { db } from "$lib/server/db";
 import { tickets } from "$lib/server/db/schema";
-import { env } from "$env/dynamic/private";
 import { eq, and } from "drizzle-orm";
 
 export async function GET({ params }) {
+    const env = readSettings();
     let n_t_from = parseInt(params.t_from), n_t_to = parseInt(params.t_to);
     if (env.TAM3_REMOTE) {
         const res = await fetch(`${env.TAM3_REMOTE}/api/tickets/${params.prefix}/${n_t_from}/${n_t_to}/?api_key=${env.TAM3_REMOTE_KEY}`);

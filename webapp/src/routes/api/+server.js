@@ -1,6 +1,7 @@
-import { env } from "$env/dynamic/private";
+import { readSettings } from "$lib/server/settings";
 
 export async function GET() {
+    const env = readSettings();
     if (env.TAM3_REMOTE) {
         const res = await fetch(`${env.TAM3_REMOTE}/api/?api_key=${env.TAM3_REMOTE_KEY}`);
         if (!res.ok) {

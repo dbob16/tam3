@@ -7,6 +7,7 @@ COPY . .
 RUN npm install && npm run build
 
 ENV DATABASE_URL=file:/data/local.db
+ENV SETTINGS_PATH=/data/settings.json
 ENV BODY_SIZE_LIMIT=100M
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 

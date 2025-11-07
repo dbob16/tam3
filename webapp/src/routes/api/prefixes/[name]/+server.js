@@ -1,9 +1,10 @@
+import { readSettings } from "$lib/server/settings";
 import { db } from "$lib/server/db";
 import { eq } from "drizzle-orm";
 import { prefixes } from "$lib/server/db/schema";
-import { env } from "$env/dynamic/private";
 
 export async function GET({ params }) {
+    const env = readSettings();
     let { name } = params;
     if (env.TAM3_REMOTE) {
         const res = await fetch(`${env.TAM3_REMOTE}/api/prefixes/${name}/?api_key=${env.TAM3_REMOTE_KEY}`);
@@ -23,6 +24,7 @@ export async function GET({ params }) {
 };
 
 export async function DELETE({ params }) {
+    const env = readSettings();
     let { name } = params;
     await db.delete(prefixes).where(eq(prefixes.name, name))
     if (env.TAM3_REMOTE) {

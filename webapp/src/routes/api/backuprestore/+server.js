@@ -1,10 +1,11 @@
-import { env } from "$env/dynamic/private";
+import { readSettings } from "$lib/server/settings";
 import { db } from "$lib/server/db";
 import { prefixes, tickets, baskets } from "$lib/server/db/schema";
 import { sql } from "drizzle-orm";
 import { chunkArray } from "$lib/server/chunkArray";
 
 export async function GET() {
+    const env = readSettings();
     if (env.TAM3_REMOTE) {
         const res = await fetch(`${env.TAM3_REMOTE}/api/backuprestore/?api_key=${env.TAM3_REMOTE_KEY}`);
         if (!res.ok) {
@@ -21,6 +22,7 @@ export async function GET() {
 }
 
 export async function POST({ request }) {
+    const env = readSettings();
     const req = await request.json();
     for (let prefixChunk of chunkArray(req.prefixes, 300)) {
         await db.insert(prefixes).values(prefixChunk).onConflictDoUpdate({target: prefixes.name, set: {color: sql`excluded.color`, weight: sql`excluded.weight`}});
