@@ -1,13 +1,17 @@
 <script>
     import { browser } from '$app/environment';
     import FormHeader from '$lib/components/FormHeader.svelte';
+    import { focusElement } from '$lib/focusElement.js';
 
     const { data } = $props();
     const prefix = {...data.prefix};
     let pagerForm = $state({id_from: 0, id_to: 0});
     let current_idx = $state(0);
+    let next_idx = $derived(current_idx+1);
+    let prev_idx = $derived(current_idx-1);
     let current_drawings = $state([]);
     let copy_buffer = $state({prefix: prefix.name, b_id: 1, winning_ticket: 0, winner: ", "});
+    let headerHeight = $state()
 
     function changeFocus(idx) {
         const focusWt = document.getElementById(`${idx}_wt`);
@@ -42,7 +46,6 @@
             functions.refreshPage();
         },
         duplicateDown: () => {
-            const next_idx = current_idx + 1;
             if (current_drawings[next_idx]) {
                 current_drawings[next_idx] = {...current_drawings[current_idx], b_id: current_drawings[next_idx].b_id, changed: true};
                 changeFocus(next_idx);
@@ -51,7 +54,6 @@
             }
         },
         duplicateUp: () => {
-            const prev_idx = current_idx - 1;
             if (prev_idx >= 0) {
                 current_drawings[prev_idx] = {...current_drawing[current_idx], b_id: current_drawings[prev_idx].b_id, changed: true};
                 changeFocus(prev_idx);
@@ -60,7 +62,6 @@
             }
         },
         gotoNext: () => {
-            const next_idx = current_idx + 1;
             if (current_drawings[next_idx]) {
                 changeFocus(next_idx);
             } else {
@@ -68,7 +69,6 @@
             }
         },
         gotoPrev: () => {
-            const prev_idx = current_idx - 1;
             if (prev_idx >= 0) {
                 changeFocus(prev_idx);
             } else {
@@ -102,9 +102,9 @@
 </script>
 
 <h1>{prefix.name} Drawing Form</h1>
-<FormHeader {prefix} {functions} bind:pagerForm />
+<FormHeader {prefix} {functions} bind:pagerForm bind:headerHeight />
 <table>
-    <thead>
+    <thead style="top: {headerHeight+2}px">
         <tr>
             <th style="width: 12ch">Basket ID</th>
             <th style="width: 20ch">Winning Number</th>
@@ -116,7 +116,7 @@
         {#each current_drawings as drawing, idx}
         <tr onfocusin={() => current_idx = idx}>
             <td>{drawing.b_id}</td>
-            <td><input type="number" id="{idx}_wt" bind:value={drawing.winning_ticket} onchange={async () => {
+            <td><input type="number" id="{idx}_wt" bind:value={drawing.winning_ticket} onfocus={focusElement} onchange={async () => {
                 drawing.changed = true;
                 const res = await fetch(`/api/tickets/${prefix.name}/${drawing.winning_ticket}`);
                 if (res.ok) {
@@ -134,8 +134,14 @@
 <style>
     table {
         width: 100%;
+        thead {
+            background-color: #ffffff;
+            position: sticky;
+            z-index: 100;
+        }
         th {
             text-align: left;
+            border: solid 1px #000000;
         }
         tbody tr:nth-child(2n) {
             background-color: #eeeeee;

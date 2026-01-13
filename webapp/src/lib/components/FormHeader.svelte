@@ -5,6 +5,7 @@
     let {
         prefix,
         pagerForm = $bindable(),
+        headerHeight = $bindable(),
         functions
     } = $props()
 
@@ -22,7 +23,7 @@
     }
 </script>
 
-<div id="formheader" class="{prefix.color}">
+<div id="formheader" class="{prefix.color}" bind:offsetHeight={headerHeight}>
     <div class="flex-row-space tb-margin">
         <div class="flex-row">
             <input type="number" bind:value={pagerForm.id_from}>

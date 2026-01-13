@@ -1,19 +1,22 @@
 <script>
     import { browser } from '$app/environment';
     import FormHeader from '$lib/components/FormHeader.svelte';
+    import { focusElement } from '$lib/focusElement.js';
 
     const { data } = $props();
     let prefix = {...data.prefix};
     let pagerForm = $state({id_from: 0, id_to: 0});
     let current_idx = $state(0);
+    let next_idx = $derived(current_idx+1);
+    let prev_idx = $derived(current_idx-1);
     let current_tickets = $state([]);
     let copy_buffer = $state({prefix: prefix.name, t_id: 0, first_name: "", last_name: "", phone_number: "", preference: "CALL", changed: true});
+    let headerHeight = $state();
 
     function changeFocus(idx) {
         const focusFn = document.getElementById(`${idx}_fn`);
         if (focusFn) {
             focusFn.select();
-            focusFn.scrollIntoView({block: "center"});
         }
     }
 
@@ -42,7 +45,6 @@
             functions.refreshPage()
         },
         duplicateDown: () => {
-            const next_idx = current_idx + 1;
             if (current_tickets[next_idx]) {
                 current_tickets[next_idx] = {...current_tickets[current_idx], t_id: current_tickets[next_idx].t_id, changed: true};
                 changeFocus(next_idx);
@@ -51,7 +53,6 @@
             }
         },
         duplicateUp: () => {
-            const prev_idx = current_idx - 1;
             if (prev_idx >= 0) {
                 current_tickets[prev_idx] = {...current_tickets[current_idx], t_id: current_tickets[prev_idx].t_id, changed: true};
                 changeFocus(prev_idx);
@@ -60,7 +61,6 @@
             }
         },
         gotoNext: () => {
-            const next_idx = current_idx + 1;
             if (current_tickets[next_idx]) {
                 changeFocus(next_idx);
             } else {
@@ -68,7 +68,6 @@
             }
         },
         gotoPrev: () => {
-            const prev_idx = current_idx - 1;
             if (prev_idx >= 0) {
                 changeFocus(prev_idx);
             } else {
@@ -104,9 +103,9 @@
 </script>
 
 <h1>{prefix.name} Ticket Entry</h1>
-<FormHeader {prefix} {functions} bind:pagerForm />
+<FormHeader {prefix} {functions} bind:pagerForm bind:headerHeight />
 <table>
-    <thead>
+    <thead style="top: {headerHeight+2}px">
         <tr>
             <th style="width: 12ch">Ticket ID</th>
             <th>First Name</th>
@@ -120,10 +119,10 @@
         {#each current_tickets as ticket, idx}
         <tr onfocusin={() => current_idx = idx}>
             <td>{ticket.t_id}</td>
-            <td><input id="{idx}_fn" type="text" bind:value={ticket.first_name} onchange={() => ticket.changed = true}></td>
-            <td><input id="{idx}_ln" type="text" bind:value={ticket.last_name} onchange={() => ticket.changed = true}></td>
-            <td><input id="{idx}_pn" type="text" bind:value={ticket.phone_number} onchange={() => ticket.changed = true}></td>
-            <td><select id="{idx}_pr" style="width: 100%" bind:value={ticket.preference} onchange={() => ticket.changed = true}>
+            <td><input id="{idx}_fn" type="text" bind:value={ticket.first_name} onfocus={focusElement} onchange={() => ticket.changed = true}></td>
+            <td><input id="{idx}_ln" type="text" bind:value={ticket.last_name} onfocus={focusElement} onchange={() => ticket.changed = true}></td>
+            <td><input id="{idx}_pn" type="text" bind:value={ticket.phone_number} onfocus={focusElement} onchange={() => ticket.changed = true}></td>
+            <td><select id="{idx}_pr" style="width: 100%" bind:value={ticket.preference} onfocus={focusElement} onchange={() => ticket.changed = true}>
                 <option value="CALL">Call</option>
                 <option value="TEXT">Text</option>
             </select></td>
@@ -136,8 +135,14 @@
 <style>
     table {
         width: 100%;
+        thead {
+            background-color: #ffffff;
+            position: sticky;
+            z-index: 100;
+        }
         th {
             text-align: left;
+            border: solid 1px #000000;
         }
         tbody tr:nth-child(2n) {
             background-color: #eeeeee;

@@ -7,8 +7,11 @@
     const prefix = {...data.prefix};
     let pagerForm = $state({id_from: 0, id_to: 0});
     let current_idx = $state(0);
+    let next_idx = $derived(current_idx+1);
+    let prev_idx = $derived(current_idx-1)
     let current_baskets = $state([]);
     let copy_buffer = $state({prefix: prefix.name, b_id: 0, description: "", donors: "", winning_ticket: 0});
+    let headerHeight = $state()
 
     function changeFocus(idx) {
         const focusDe = document.getElementById(`${idx}_de`);
@@ -43,7 +46,6 @@
             functions.refreshPage();
         },
         duplicateDown: () => {
-            const next_idx = current_idx + 1;
             if (current_baskets[next_idx]) {
                 current_baskets[next_idx] = {...current_baskets[current_idx], b_id: current_baskets[next_idx].b_id, winning_ticket: current_baskets[next_idx].winning_ticket, changed: true};
                 changeFocus(next_idx);
@@ -52,7 +54,6 @@
             }
         },
         duplicateUp: () => {
-            const prev_idx = current_idx - 1;
             if (prev_idx >= 0) {
                 current_baskets[prev_idx] = {...current_baskets[current_idx], b_id: current_baskets[prev_idx].b_id, winning_ticket: current_baskets[prev_idx].winning_ticket, changed: true};
                 changeFocus(prev_idx);
@@ -61,7 +62,6 @@
             }
         },
         gotoNext: () => {
-            const next_idx = current_idx + 1;
             if (current_baskets[next_idx]) {
                 changeFocus(next_idx);
             } else {
@@ -69,7 +69,6 @@
             }
         },
         gotoPrev: () => {
-            const prev_idx = current_idx - 1;
             if (prev_idx >= 0) {
                 changeFocus(prev_idx);
             } else {
@@ -103,9 +102,9 @@
 </script>
 
 <h1>{prefix.name} Basket Entry</h1>
-<FormHeader {prefix} {functions} bind:pagerForm />
+<FormHeader {prefix} {functions} bind:pagerForm bind:headerHeight />
 <table>
-    <thead>
+    <thead style="top: {headerHeight+2}px">
         <tr>
             <th style="width: 12ch">Basket ID</th>
             <th>Description</th>
@@ -128,8 +127,14 @@
 <style>
     table {
         width: 100%;
+        thead {
+            background-color: #ffffff;
+            position: sticky;
+            z-index: 100;
+        }
         th {
             text-align: left;
+            border: solid 1px #000000;
         }
         tbody tr:nth-child(2n) {
             background-color: #eeeeee;
