@@ -2,7 +2,6 @@
 
 from fastapi import FastAPI
 from sys import argv
-from exceptions import bad_key
 
 from repos.api_keys import ApiKeyRepo
 
@@ -13,6 +12,7 @@ from routers.combined import combined_router
 from routers.reports import report_router
 from routers.backuprestore import backup_router
 from routers.counts import counts_router
+from routers.search import search_router
 
 if argv[1] == "run":
     app = FastAPI(title="TAM3 API Server", docs_url=None, redoc_url=None)
@@ -32,3 +32,4 @@ app.include_router(combined_router)
 app.include_router(report_router)
 app.include_router(backup_router)
 app.include_router(counts_router)
+app.include_router(search_router)
