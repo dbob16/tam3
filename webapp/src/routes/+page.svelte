@@ -17,7 +17,7 @@
       current_prefix = {...new_prefix};
     }
   })
-  
+
   if (browser) {
     document.title = `${venue} - Main Menu`;
     hotkeys.filter = function(event) {return true};
@@ -73,6 +73,7 @@
 <div><h2>Admin Mode:</h2></div>
   <div class="flex-row">
     <a href="/prefixes" target="_blank" class="styled">Prefix Editor</a>
+    <a href="/search/tickets" target="_blank" class="styled">Search Tickets</a>
     <a href="/backuprestore" target="_blank" class="styled">Backup/Restore</a>
     <a href="/settings" target="_blank" class="styled">Settings</a>
 </div>

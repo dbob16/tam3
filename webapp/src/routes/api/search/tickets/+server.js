@@ -10,6 +10,27 @@ export async function GET({ url }) {
     sPhoneNumber = url.searchParams.get("phone_number") || "";
 
   if (env.TAM3_REMOTE) {
+    const searchParams = new URLSearchParams({
+      api_key: env.TAM3_REMOTE_KEY,
+      first_name: sFirstName,
+      last_name: sLastName,
+      phone_number: sPhoneNumber,
+    });
+    const res = await fetch(
+      `${env.TAM3_REMOTE}/api/search/tickets/?${searchParams.toString()}`,
+    );
+    if (!res.ok) {
+      return new Response(JSON.stringify([]), {
+        status: res.status,
+        statusText: res.statusText,
+      });
+    }
+    const data = await res.json();
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      statusText: "Fetched successfully",
+      headers: { "Content-Type": "application/json" },
+    });
   } else {
     const results = await db
       .select()

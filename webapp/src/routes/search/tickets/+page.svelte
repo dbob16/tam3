@@ -1,0 +1,248 @@
+<script>
+    import { browser } from "$app/environment";
+    import SearchHeader from "$lib/components/SearchHeader.svelte";
+    import { focusElement } from "$lib/focusElement.js";
+
+    let searchForm = $state({
+        first_name: "",
+        last_name: "",
+        phone_number: "",
+    });
+    let current_idx = $state(0);
+    let next_idx = $derived(current_idx + 1);
+    let prev_idx = $derived(current_idx - 1);
+    let current_tickets = $state([]);
+    let copy_buffer = $state({
+        prefix: "",
+        t_id: 0,
+        first_name: "",
+        last_name: "",
+        phone_number: "",
+        preference: "CALL",
+        changed: true,
+    });
+    let headerHeight = $state();
+
+    function changeFocus(idx) {
+        const focusFn = document.getElementById(`${idx}_fn`);
+        if (focusFn) {
+            focusFn.select();
+        }
+    }
+
+    const functions = {
+        refreshPage: async () => {
+            if (
+                current_tickets.filter((ticket) => ticket.changed === true)
+                    .length > 0
+            ) {
+                functions.saveAll();
+            }
+            const searchParams = new URLSearchParams({ ...searchForm });
+            const res = await fetch(
+                `/api/search/tickets?${searchParams.toString()}`,
+            );
+            if (res.ok) {
+                const data = await res.json();
+                current_tickets = [...data];
+                setTimeout(() => changeFocus(0), 100);
+            }
+        },
+        prevPage: () => {
+            const diff = current_tickets.length;
+            pagerForm.id_from = pagerForm.id_from - diff;
+            pagerForm.id_to = pagerForm.id_to - diff;
+            functions.refreshPage();
+        },
+        nextPage: () => {
+            const diff = current_tickets.length;
+            pagerForm.id_from = pagerForm.id_from + diff;
+            pagerForm.id_to = pagerForm.id_to + diff;
+            functions.refreshPage();
+        },
+        duplicateDown: () => {
+            if (current_tickets[next_idx]) {
+                current_tickets[next_idx] = {
+                    ...current_tickets[current_idx],
+                    prefix: current_tickets[next_idx].prefix,
+                    t_id: current_tickets[next_idx].t_id,
+                    changed: true,
+                };
+                changeFocus(next_idx);
+            } else {
+                changeFocus(current_idx);
+            }
+        },
+        duplicateUp: () => {
+            if (prev_idx >= 0) {
+                current_tickets[prev_idx] = {
+                    ...current_tickets[current_idx],
+                    prefix: current_tickets[prev_idx].prefix,
+                    t_id: current_tickets[prev_idx].t_id,
+                    changed: true,
+                };
+                changeFocus(prev_idx);
+            } else {
+                changeFocus(current_idx);
+            }
+        },
+        gotoNext: () => {
+            if (current_tickets[next_idx]) {
+                changeFocus(next_idx);
+            } else {
+                changeFocus(current_idx);
+            }
+        },
+        gotoPrev: () => {
+            if (prev_idx >= 0) {
+                changeFocus(prev_idx);
+            } else {
+                changeFocus(current_idx);
+            }
+        },
+        copy: () => {
+            copy_buffer = { ...current_tickets[current_idx] };
+            changeFocus(current_idx);
+        },
+        paste: () => {
+            current_tickets[current_idx] = {
+                ...copy_buffer,
+                prefix: current_tickets[current_idx].prefix,
+                t_id: current_tickets[current_idx].t_id,
+                changed: true,
+            };
+            changeFocus(current_idx);
+        },
+        saveAll: async () => {
+            const to_save = current_tickets.filter(
+                (ticket) => ticket.changed === true,
+            );
+            const res = await fetch(`/api/tickets`, {
+                body: JSON.stringify(to_save),
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+            });
+            if (res.ok) {
+                for (let ticket of current_tickets) {
+                    ticket.changed = false;
+                }
+                changeFocus(0);
+            }
+        },
+    };
+
+    if (browser) {
+        document.title = `Ticket Search`;
+        window.addEventListener("beforeunload", function (e) {
+            if (
+                current_tickets.filter((ticket) => ticket.changed === true)
+                    .length > 0
+            ) {
+                e.preventDefault();
+            }
+        });
+    }
+</script>
+
+<h1>Ticket Search</h1>
+<SearchHeader {functions} bind:searchForm bind:headerHeight />
+<table>
+    <thead style="top: {headerHeight + 2}px">
+        <tr>
+            <th>Prefix</th>
+            <th style="width: 12ch">Ticket ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Phone Number</th>
+            <th>Preference</th>
+            <th>Changed</th>
+        </tr>
+    </thead>
+    <tbody>
+        {#each current_tickets as ticket, idx}
+            <tr onfocusin={() => (current_idx = idx)}>
+                <td>{ticket.prefix}</td>
+                <td>{ticket.t_id}</td>
+                <td
+                    ><input
+                        id="{idx}_fn"
+                        type="text"
+                        bind:value={ticket.first_name}
+                        onfocus={focusElement}
+                        onchange={() => (ticket.changed = true)}
+                    /></td
+                >
+                <td
+                    ><input
+                        id="{idx}_ln"
+                        type="text"
+                        bind:value={ticket.last_name}
+                        onfocus={focusElement}
+                        onchange={() => (ticket.changed = true)}
+                    /></td
+                >
+                <td
+                    ><input
+                        id="{idx}_pn"
+                        type="text"
+                        bind:value={ticket.phone_number}
+                        onfocus={focusElement}
+                        onchange={() => (ticket.changed = true)}
+                    /></td
+                >
+                <td
+                    ><select
+                        id="{idx}_pr"
+                        style="width: 100%"
+                        bind:value={ticket.preference}
+                        onfocus={focusElement}
+                        onchange={() => (ticket.changed = true)}
+                    >
+                        <option value="CALL">Call</option>
+                        <option value="TEXT">Text</option>
+                    </select></td
+                >
+                <td
+                    ><button
+                        tabindex="-1"
+                        onclick={() => (ticket.changed = !ticket.changed)}
+                        >{ticket.changed ? "Y" : "N"}</button
+                    ></td
+                >
+            </tr>
+        {/each}
+    </tbody>
+</table>
+
+<style>
+    table {
+        width: 100%;
+        thead {
+            background-color: #ffffff;
+            position: sticky;
+            z-index: 100;
+        }
+        th {
+            text-align: left;
+            border: solid 1px #000000;
+        }
+        tbody tr:nth-child(2n) {
+            background-color: #eeeeee;
+        }
+        tbody tr:focus-within td:first-child {
+            font-weight: bold;
+            border-top: solid 1px;
+            border-bottom: solid 1px;
+        }
+        input {
+            background: transparent;
+            border: solid 1px #000000;
+        }
+        input,
+        button {
+            display: block;
+            box-sizing: border-box;
+            width: 100%;
+        }
+    }
+</style>
