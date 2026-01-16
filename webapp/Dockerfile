@@ -1,10 +1,16 @@
 FROM docker.io/node:lts-alpine AS build
 
-RUN mkdir /data
-WORKDIR /app
+ENV NODE_ENV=production
 
-COPY . .
-RUN npm install && npm run build
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+
+RUN mkdir /data
+
+COPY build/ ./build/
+COPY drizzle.config.js .
+COPY drizzle/ ./drizzle/
 
 ENV DATABASE_URL=file:/data/local.db
 ENV SETTINGS_PATH=/data/settings.json
