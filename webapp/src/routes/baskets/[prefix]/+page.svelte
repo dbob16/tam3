@@ -1,36 +1,41 @@
 <script>
-    import { browser } from '$app/environment';
-    import FormHeader from '$lib/components/FormHeader.svelte';
-    import hotkeys from 'hotkeys-js';
+    import { browser } from "$app/environment";
+    import FormHeader from "$lib/components/FormHeader.svelte";
+    import hotkeys from "hotkeys-js";
 
     const { data } = $props();
-    const prefix = {...data.prefix};
-    let pagerForm = $state({id_from: 0, id_to: 0});
+    const prefix = $derived(data.prefix);
+    let pagerForm = $state({ id_from: 0, id_to: 0 });
     let current_idx = $state(0);
-    let next_idx = $derived(current_idx+1);
-    let prev_idx = $derived(current_idx-1)
+    let next_idx = $derived(current_idx + 1);
+    let prev_idx = $derived(current_idx - 1);
     let current_baskets = $state([]);
-    let copy_buffer = $state({prefix: prefix.name, b_id: 0, description: "", donors: "", winning_ticket: 0});
-    let headerHeight = $state()
+    let copy_buffer = $state({});
+    let headerHeight = $state();
 
     function changeFocus(idx) {
         const focusDe = document.getElementById(`${idx}_de`);
         if (focusDe) {
             focusDe.select();
-            focusDe.scrollIntoView({block: "center"});
+            focusDe.scrollIntoView({ block: "center" });
         }
     }
 
     const functions = {
         refreshPage: async () => {
-            if (current_baskets.filter(basket => basket.changed === true).length > 0) {
-                functions.saveAll()
+            if (
+                current_baskets.filter((basket) => basket.changed === true)
+                    .length > 0
+            ) {
+                functions.saveAll();
             }
-            const res = await fetch(`/api/baskets/${prefix.name}/${pagerForm.id_from}/${pagerForm.id_to}`);
+            const res = await fetch(
+                `/api/baskets/${prefix.name}/${pagerForm.id_from}/${pagerForm.id_to}`,
+            );
             if (res.ok) {
                 const data = await res.json();
                 current_baskets = [...data];
-                setTimeout(() => changeFocus(0), 100)
+                setTimeout(() => changeFocus(0), 100);
             }
         },
         prevPage: () => {
@@ -47,7 +52,12 @@
         },
         duplicateDown: () => {
             if (current_baskets[next_idx]) {
-                current_baskets[next_idx] = {...current_baskets[current_idx], b_id: current_baskets[next_idx].b_id, winning_ticket: current_baskets[next_idx].winning_ticket, changed: true};
+                current_baskets[next_idx] = {
+                    ...current_baskets[current_idx],
+                    b_id: current_baskets[next_idx].b_id,
+                    winning_ticket: current_baskets[next_idx].winning_ticket,
+                    changed: true,
+                };
                 changeFocus(next_idx);
             } else {
                 changeFocus(next_idx);
@@ -55,7 +65,12 @@
         },
         duplicateUp: () => {
             if (prev_idx >= 0) {
-                current_baskets[prev_idx] = {...current_baskets[current_idx], b_id: current_baskets[prev_idx].b_id, winning_ticket: current_baskets[prev_idx].winning_ticket, changed: true};
+                current_baskets[prev_idx] = {
+                    ...current_baskets[current_idx],
+                    b_id: current_baskets[prev_idx].b_id,
+                    winning_ticket: current_baskets[prev_idx].winning_ticket,
+                    changed: true,
+                };
                 changeFocus(prev_idx);
             } else {
                 changeFocus(prev_idx);
@@ -76,35 +91,56 @@
             }
         },
         copy: () => {
-            copy_buffer = {...current_baskets[current_idx]};
+            copy_buffer = { ...current_baskets[current_idx] };
         },
         paste: () => {
-            current_baskets[current_idx] = {...copy_buffer, b_id: current_baskets[current_idx].b_id, changed: true}
+            if (Object.keys(copy_buffer).length !== 0) {
+                current_baskets[current_idx] = {
+                    ...copy_buffer,
+                    b_id: current_baskets[current_idx].b_id,
+                    changed: true,
+                };
+            }
+            changeFocus(current_idx);
         },
         saveAll: async () => {
-            const to_save = current_baskets.filter((basket) => basket.changed === true);
-            const res = await fetch(`/api/baskets`, {body: JSON.stringify(to_save), method: 'POST', headers: {'Content-Type': 'application/json'}});
+            const to_save = current_baskets.filter(
+                (basket) => basket.changed === true,
+            );
+            const res = await fetch(`/api/baskets`, {
+                body: JSON.stringify(to_save),
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+            });
             if (res.ok) {
-                for (let basket of current_baskets) {basket.changed = false};
+                for (let basket of current_baskets) {
+                    basket.changed = false;
+                }
                 changeFocus(0);
-            };
-        }
-    }
+            }
+        },
+    };
 
     if (browser) {
-        document.title = `${prefix.name} Basket Entry`
-        window.addEventListener("beforeunload", function(e) {
-            if (current_baskets.filter(basket => basket.changed === true).length > 0) {
+        window.addEventListener("beforeunload", function (e) {
+            if (
+                current_baskets.filter((basket) => basket.changed === true)
+                    .length > 0
+            ) {
                 e.preventDefault();
             }
-        })
+        });
     }
 </script>
+
+<svelte:head>
+    <title>{prefix.name} Basket Entry</title>
+</svelte:head>
 
 <h1>{prefix.name} Basket Entry</h1>
 <FormHeader {prefix} {functions} bind:pagerForm bind:headerHeight />
 <table>
-    <thead style="top: {headerHeight+2}px">
+    <thead style="top: {headerHeight + 2}px">
         <tr>
             <th style="width: 12ch">Basket ID</th>
             <th>Description</th>
@@ -114,12 +150,32 @@
     </thead>
     <tbody>
         {#each current_baskets as basket, idx}
-        <tr onfocusin={() => current_idx = idx}>
-            <td>{basket.b_id}</td>
-            <td><input type="text" id="{idx}_de" onchange={() => basket.changed = true} bind:value={basket.description}></td>
-            <td><input type="text" id="{idx}_do" onchange={() => basket.changed = true} bind:value={basket.donors}></td>
-            <td><button tabindex="-1" onclick={() => basket.changed = !basket.changed}>{basket.changed ? "Y" : "N"}</button></td>
-        </tr>
+            <tr onfocusin={() => (current_idx = idx)}>
+                <td>{basket.b_id}</td>
+                <td
+                    ><input
+                        type="text"
+                        id="{idx}_de"
+                        onchange={() => (basket.changed = true)}
+                        bind:value={basket.description}
+                    /></td
+                >
+                <td
+                    ><input
+                        type="text"
+                        id="{idx}_do"
+                        onchange={() => (basket.changed = true)}
+                        bind:value={basket.donors}
+                    /></td
+                >
+                <td
+                    ><button
+                        tabindex="-1"
+                        onclick={() => (basket.changed = !basket.changed)}
+                        >{basket.changed ? "Y" : "N"}</button
+                    ></td
+                >
+            </tr>
         {/each}
     </tbody>
 </table>
@@ -148,7 +204,8 @@
             background: transparent;
             border: solid 1px #000000;
         }
-        input, button {
+        input,
+        button {
             display: block;
             box-sizing: border-box;
             width: 100%;

@@ -1,18 +1,26 @@
 <script>
-    import { browser } from '$app/environment';
+    import { browser } from "$app/environment";
 
     const { data } = $props();
-    const counts = data.counts;
-    const prefixes = data.prefixes;
+    const counts = $derived(data.counts);
+    function copyPrefixes() {
+        return [...data.prefixes];
+    }
+    const prefixes = $state(copyPrefixes());
 
     let colormap = {};
-    for (let prefix of prefixes) {colormap[prefix.name] = prefix.color}
+    for (let prefix of prefixes) {
+        colormap[prefix.name] = prefix.color;
+    }
 
     if (browser) {
-        document.title = "Counts of tickets entered";
         setTimeout(() => window.location.reload(true), 60000);
     }
 </script>
+
+<svelte:head>
+    <title>Counts of tickets entered</title>
+</svelte:head>
 
 <h1>Counts of tickets entered</h1>
 <table>
@@ -25,11 +33,11 @@
     </thead>
     <tbody>
         {#each counts as count}
-        <tr class={colormap[count.prefix]}>
-            <td>{count.prefix}</td>
-            <td>{parseInt(count.total_sold).toLocaleString()}</td>
-            <td>{parseInt(count.unique_sold).toLocaleString()}</td>
-        </tr>
+            <tr class={colormap[count.prefix]}>
+                <td>{count.prefix}</td>
+                <td>{parseInt(count.total_sold).toLocaleString()}</td>
+                <td>{parseInt(count.unique_sold).toLocaleString()}</td>
+            </tr>
         {/each}
     </tbody>
 </table>

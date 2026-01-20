@@ -26,9 +26,9 @@
 <div id="formheader" class="{prefix.color}" bind:offsetHeight={headerHeight}>
     <div class="flex-row-space tb-margin">
         <div class="flex-row">
-            <input type="number" bind:value={pagerForm.id_from}>
+            <input type="number" onfocus={(e) => e.target.select()} bind:value={pagerForm.id_from}>
             <div style="font-size: 22pt">-</div>
-            <input type="number" bind:value={pagerForm.id_to}>
+            <input type="number" onfocus={(e) => e.target.select()} bind:value={pagerForm.id_to}>
             <button class="styled" onclick={() => {
                 if (Math.abs(pagerForm.id_to - pagerForm.id_from) > 800) {
                     pagerForm.id_to = pagerForm.id_from + 799;

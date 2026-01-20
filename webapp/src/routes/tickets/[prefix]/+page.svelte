@@ -1,16 +1,16 @@
 <script>
-    import { browser } from '$app/environment';
-    import FormHeader from '$lib/components/FormHeader.svelte';
-    import { focusElement } from '$lib/focusElement.js';
+    import { browser } from "$app/environment";
+    import FormHeader from "$lib/components/FormHeader.svelte";
+    import { focusElement } from "$lib/focusElement.js";
 
     const { data } = $props();
-    let prefix = {...data.prefix};
-    let pagerForm = $state({id_from: 0, id_to: 0});
+    const prefix = $derived(data.prefix);
+    let pagerForm = $state({ id_from: 0, id_to: 0 });
     let current_idx = $state(0);
-    let next_idx = $derived(current_idx+1);
-    let prev_idx = $derived(current_idx-1);
+    let next_idx = $derived(current_idx + 1);
+    let prev_idx = $derived(current_idx - 1);
     let current_tickets = $state([]);
-    let copy_buffer = $state({prefix: prefix.name, t_id: 0, first_name: "", last_name: "", phone_number: "", preference: "CALL", changed: true});
+    let copy_buffer = $state({});
     let headerHeight = $state();
 
     function changeFocus(idx) {
@@ -22,42 +22,55 @@
 
     const functions = {
         refreshPage: async () => {
-            if (current_tickets.filter(ticket => ticket.changed === true).length > 0) {
+            if (
+                current_tickets.filter((ticket) => ticket.changed === true)
+                    .length > 0
+            ) {
                 functions.saveAll();
-            };
-            const res = await fetch(`/api/tickets/${prefix.name}/${pagerForm.id_from}/${pagerForm.id_to}`);
+            }
+            const res = await fetch(
+                `/api/tickets/${prefix.name}/${pagerForm.id_from}/${pagerForm.id_to}`,
+            );
             if (res.ok) {
                 const data = await res.json();
                 current_tickets = [...data];
                 setTimeout(() => changeFocus(0), 100);
-            };
+            }
         },
         prevPage: () => {
             const diff = current_tickets.length;
             pagerForm.id_from = pagerForm.id_from - diff;
             pagerForm.id_to = pagerForm.id_to - diff;
-            functions.refreshPage()
+            functions.refreshPage();
         },
         nextPage: () => {
             const diff = current_tickets.length;
             pagerForm.id_from = pagerForm.id_from + diff;
             pagerForm.id_to = pagerForm.id_to + diff;
-            functions.refreshPage()
+            functions.refreshPage();
         },
         duplicateDown: () => {
             if (current_tickets[next_idx]) {
-                current_tickets[next_idx] = {...current_tickets[current_idx], t_id: current_tickets[next_idx].t_id, changed: true};
+                current_tickets[next_idx] = {
+                    ...current_tickets[current_idx],
+                    t_id: current_tickets[next_idx].t_id,
+                    changed: true,
+                };
                 changeFocus(next_idx);
             } else {
-                changeFocus(current_idx)
+                changeFocus(current_idx);
             }
         },
         duplicateUp: () => {
             if (prev_idx >= 0) {
-                current_tickets[prev_idx] = {...current_tickets[current_idx], t_id: current_tickets[prev_idx].t_id, changed: true};
+                current_tickets[prev_idx] = {
+                    ...current_tickets[current_idx],
+                    t_id: current_tickets[prev_idx].t_id,
+                    changed: true,
+                };
                 changeFocus(prev_idx);
             } else {
-                changeFocus(current_idx)
+                changeFocus(current_idx);
             }
         },
         gotoNext: () => {
@@ -75,37 +88,58 @@
             }
         },
         copy: () => {
-            copy_buffer = {...current_tickets[current_idx]};
+            copy_buffer = { ...current_tickets[current_idx] };
             changeFocus(current_idx);
+            disablePaste = false;
         },
         paste: () => {
-            current_tickets[current_idx] = {...copy_buffer, t_id: current_tickets[current_idx].t_id, changed: true};
+            if (Object.keys(copy_buffer).length !== 0) {
+                current_tickets[current_idx] = {
+                    ...copy_buffer,
+                    t_id: current_tickets[current_idx].t_id,
+                    changed: true,
+                };
+            }
             changeFocus(current_idx);
         },
         saveAll: async () => {
-            const to_save = current_tickets.filter((ticket) => ticket.changed === true);
-            const res = await fetch(`/api/tickets`, {body: JSON.stringify(to_save), method: 'POST', headers: {'Content-Type': 'application/json'}});
+            const to_save = current_tickets.filter(
+                (ticket) => ticket.changed === true,
+            );
+            const res = await fetch(`/api/tickets`, {
+                body: JSON.stringify(to_save),
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+            });
             if (res.ok) {
-                for (let ticket of current_tickets) {ticket.changed = false};
+                for (let ticket of current_tickets) {
+                    ticket.changed = false;
+                }
                 changeFocus(0);
             }
-        }
+        },
     };
-    
+
     if (browser) {
-        document.title = `${prefix.name} Ticket Entry`;
-        window.addEventListener("beforeunload", function(e) {
-            if (current_tickets.filter(ticket => ticket.changed === true).length > 0) {
+        window.addEventListener("beforeunload", function (e) {
+            if (
+                current_tickets.filter((ticket) => ticket.changed === true)
+                    .length > 0
+            ) {
                 e.preventDefault();
             }
         });
     }
 </script>
 
+<svelte:head>
+    <title>{prefix.name} Ticket Entry</title>
+</svelte:head>
+
 <h1>{prefix.name} Ticket Entry</h1>
 <FormHeader {prefix} {functions} bind:pagerForm bind:headerHeight />
 <table>
-    <thead style="top: {headerHeight+2}px">
+    <thead style="top: {headerHeight + 2}px">
         <tr>
             <th style="width: 12ch">Ticket ID</th>
             <th>First Name</th>
@@ -117,17 +151,55 @@
     </thead>
     <tbody>
         {#each current_tickets as ticket, idx}
-        <tr onfocusin={() => current_idx = idx}>
-            <td>{ticket.t_id}</td>
-            <td><input id="{idx}_fn" type="text" bind:value={ticket.first_name} onfocus={focusElement} onchange={() => ticket.changed = true}></td>
-            <td><input id="{idx}_ln" type="text" bind:value={ticket.last_name} onfocus={focusElement} onchange={() => ticket.changed = true}></td>
-            <td><input id="{idx}_pn" type="text" bind:value={ticket.phone_number} onfocus={focusElement} onchange={() => ticket.changed = true}></td>
-            <td><select id="{idx}_pr" style="width: 100%" bind:value={ticket.preference} onfocus={focusElement} onchange={() => ticket.changed = true}>
-                <option value="CALL">Call</option>
-                <option value="TEXT">Text</option>
-            </select></td>
-            <td><button tabindex="-1" onclick={() => ticket.changed = !ticket.changed}>{ticket.changed ? "Y" : "N"}</button></td>
-        </tr>
+            <tr onfocusin={() => (current_idx = idx)}>
+                <td>{ticket.t_id}</td>
+                <td
+                    ><input
+                        id="{idx}_fn"
+                        type="text"
+                        bind:value={ticket.first_name}
+                        onfocus={focusElement}
+                        onchange={() => (ticket.changed = true)}
+                    /></td
+                >
+                <td
+                    ><input
+                        id="{idx}_ln"
+                        type="text"
+                        bind:value={ticket.last_name}
+                        onfocus={focusElement}
+                        onchange={() => (ticket.changed = true)}
+                    /></td
+                >
+                <td
+                    ><input
+                        id="{idx}_pn"
+                        type="text"
+                        bind:value={ticket.phone_number}
+                        onfocus={focusElement}
+                        onchange={() => (ticket.changed = true)}
+                    /></td
+                >
+                <td
+                    ><select
+                        id="{idx}_pr"
+                        style="width: 100%"
+                        bind:value={ticket.preference}
+                        onfocus={focusElement}
+                        onchange={() => (ticket.changed = true)}
+                    >
+                        <option value="CALL">Call</option>
+                        <option value="TEXT">Text</option>
+                    </select></td
+                >
+                <td
+                    ><button
+                        tabindex="-1"
+                        onclick={() => (ticket.changed = !ticket.changed)}
+                        >{ticket.changed ? "Y" : "N"}</button
+                    ></td
+                >
+            </tr>
         {/each}
     </tbody>
 </table>
@@ -156,7 +228,8 @@
             background: transparent;
             border: solid 1px #000000;
         }
-        input, button {
+        input,
+        button {
             display: block;
             box-sizing: border-box;
             width: 100%;
