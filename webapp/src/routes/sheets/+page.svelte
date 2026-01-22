@@ -7,10 +7,13 @@
     }
 
     function loadRows() {
-        currentRows = [];
-        for (let i = formData.startNumber; i <= formData.endNumber; i++) {
-            currentRows = [...currentRows, i];
-        }
+        currentRows = ["Loading"]
+        setTimeout(() => {
+          currentRows = [];
+          for (let i = formData.startNumber; i <= formData.endNumber; i++) {
+              currentRows = [...currentRows, i];
+          }
+        }, 1)
     }
 </script>
 
