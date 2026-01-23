@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ../common.sh
+tam3_version="0.3.0"
 
 mkdir -p ~/.config/TAM3/data
 
