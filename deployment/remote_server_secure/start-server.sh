@@ -8,6 +8,7 @@ gen_password=$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 32)
 
 echo "DB_LOCATION=./tam3-db" > .env
 echo "DB_PASSWORD=${gen_password}" >> .env
+echo "TAM3_VERSION=0.3.0"
 
 if [ -x "$(command -v docker)" ]; then
 docker compose up -d
