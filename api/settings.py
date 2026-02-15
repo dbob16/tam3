@@ -20,6 +20,9 @@ def read_config():
             "password": os.getenv("TAM3_DB_PASSWD", "tam3"),
             "database": os.getenv("TAM3_DB_DATABASE", "tam3"),
         }
+        config["tickets"] = {
+            "default_pref": os.getenv("TAM3_DEFAULT_PREF", "CALL")
+        }
         with open(config_path, "w") as f:
             config.write(f)
         return config

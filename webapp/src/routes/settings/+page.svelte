@@ -58,6 +58,24 @@
 
 <br />
 
+<hr />
+
+<div>
+    <h2>Local Settings</h2>
+    <p>These settings will only apply if you're operating in local mode.</p>
+    <div>
+        <div>Default Ticket Contact Preference:</div>
+        <div>
+            <select bind:value={stagingSettings.TAM3_DEFAULT_PREF}>
+                <option value="CALL">CALL</option>
+                <option value="TEXT">TEXT</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<br />
+
 <div class="flex-row">
     <button class="styled" onclick={saveChanges}>Save</button>
     <button class="styled" onclick={cancelChanges}>Cancel</button>

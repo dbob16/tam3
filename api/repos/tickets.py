@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from .template import Repo
+from settings import read_config
 
 @dataclass
 class Ticket:
@@ -8,7 +9,7 @@ class Ticket:
     first_name: str = ""
     last_name: str = ""
     phone_number: str = ""
-    preference: str = "CALL"
+    preference: str = read_config()["tickets"]["default_pref"] or "CALL"
     changed: bool = False
 
 class TicketRepo(Repo):
